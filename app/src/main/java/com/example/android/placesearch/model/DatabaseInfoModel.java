@@ -7,7 +7,7 @@ public class DatabaseInfoModel extends RealmObject{
     private String vicinity;
     private String lat;
     private String lng;
-    private float rating;
+    private double rating;
     private String icon;
 
     public String getName() {
@@ -42,11 +42,11 @@ public class DatabaseInfoModel extends RealmObject{
         this.lng = lng;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

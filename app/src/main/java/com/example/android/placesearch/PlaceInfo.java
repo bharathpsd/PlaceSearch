@@ -1,5 +1,7 @@
 package com.example.android.placesearch;
 
+import android.graphics.Bitmap;
+
 import com.example.android.placesearch.Geometry;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -20,6 +22,13 @@ public class PlaceInfo {
     @Expose
     private Geometry geometry;
 
+    @SerializedName("icon")
+    @Expose
+    private String icon;
+
+    @SerializedName("rating")
+    @Expose
+    private double rating;
 
     public Geometry getGeometry() {
         return geometry;
@@ -37,6 +46,21 @@ public class PlaceInfo {
         return vicinity;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public void setGeometry(Geometry geometry){
         this.geometry = geometry;

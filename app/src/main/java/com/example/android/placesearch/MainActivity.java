@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     //widget
     AutoCompleteTextView editText;
-
+    ImageView imageView;
     //places
     private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
 
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editText = findViewById(R.id.input_search);
+        imageView = findViewById(R.id.imageview_main);
         //Checking whether the Google Play Services are available or not
         if (googlePlayServicesAvailability()) {
             Toast.makeText(this, "Google Play Services are Available", Toast.LENGTH_SHORT).show();
@@ -92,11 +94,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         transaction.add(R.id.container,recyclerFragment);
         transaction.commit();
 
-        // Initialize Realm
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().build();
-        Realm.setDefaultConfiguration(config);
-        realm = Realm.getDefaultInstance();
     }
 
     private void init(){
@@ -163,13 +160,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         String url = getUrl(searchString,latitude,longitude);
         if(url != null) {
             location = String.valueOf(latitude) + "," + String.valueOf(longitude);
-            Object dataTransfer[] = new Object[6];
+            Object dataTransfer[] = new Object[8];
             dataTransfer[0] = mMap;
             dataTransfer[1] = location;
             dataTransfer[2] = PROXIMITY_RADIUS;
             dataTransfer[3] = searchString;
             dataTransfer[4] = "true";
             dataTransfer[5] = "AIzaSyCISqMTancgO02iHQ-VRE8praCFcH-1uqQ";
+            dataTransfer[6] = imageView;
+            dataTransfer[7] = getApplicationContext();
             hideSoftKeyBoard(MainActivity.this);
             GetPlaces getPlaces = new GetPlaces(dataTransfer);
 
@@ -266,11 +265,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     TextView address_name = v.findViewById(R.id.address_vicinity);
                     TextView latlng = v.findViewById(R.id.latlng);
                     TextView vicinity = v.findViewById(R.id.address);
+                    TextView rating = v.findViewById(R.id.rating_info);
                     address_name.setText(marker.getTitle());
                     Log.e("Address",marker.getTitle());
                     vicinity.setText(marker.getSnippet());
                     Log.e("vicinity",marker.getSnippet());
                     LatLng latLng = marker.getPosition();
+                    rating.setText(String.valueOf(marker.getAlpha()));
                     String latitude_longitude = String.valueOf(latLng.latitude) + "," + String.valueOf(latLng.longitude);
                     latlng.setText(latitude_longitude);
                     return v;

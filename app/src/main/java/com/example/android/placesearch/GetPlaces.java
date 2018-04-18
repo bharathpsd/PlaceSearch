@@ -1,15 +1,20 @@
 package com.example.android.placesearch;
 
 //import android.content.Context;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ImageView;
+
 import com.example.android.placesearch.Geometry;
+import com.example.android.placesearch.model.DatabaseInfoModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +24,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.CompactOnLaunchCallback;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,78 +45,62 @@ public class GetPlaces{
     private Realm realm;
     private Retrofit retrofit;
     private JSONObject data;
-    String url;
-//    private Context context;
-//    protected String doInBackground(Object... objects) {
-//        mMap = (GoogleMap) objects[0];
-//        url = (String) objects[1];
-////        context = (Context) objects[2];
-//        realm = (Realm) objects[2];
-//        Log.e("Tracing","<----------------- Do in Background------------------>");;
-//        DownloadUrl downloadUrl = new DownloadUrl();
-//        try {
-//            googlePlacesData = downloadUrl.readUrl(url);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.e("Google Places Data", googlePlacesData);
-//
-//        return googlePlacesData;
+    private String url;
+    private ImageView imageView;
+    private Context context;
 
     GetPlaces(Object[] objects) {
         mMap = (GoogleMap) objects[0];
         _location = (String) objects[1];
         proximity = String.valueOf((int) objects[2]);
-
         _searchString = (String) objects[3];
         sensor = (String) objects[4];
         key = (String) objects[5];
+        imageView = (ImageView) objects[6];
+        context = (Context) objects[7];
+        initRealm(context);
         getJSONData();
     }
 
-    private void getJSONData(){
-        Log.e("","<------------------getJSONData running-------------->");
+    private void initRealm(Context context){
+        // Initialize Realm
+        Realm.init(context);
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(config);
+        realm = Realm.getDefaultInstance();
+    }
+
+    private void getJSONData() {
+        Log.e("", "<------------------getJSONData running-------------->");
         retrofit = new Retrofit.Builder()
                 .baseUrl(DownloadUrl.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         DownloadUrl downloadUrlData = retrofit.create(DownloadUrl.class);
-        Log.e("","<------------------Retrofit Data Created-------------->");
-        Call<PlaceResponse> call = downloadUrlData.getPlaceDetailsForQuery(_location,proximity,_searchString,sensor,key);
+        Log.e("", "<------------------Retrofit Data Created-------------->");
+        Call<PlaceResponse> call = downloadUrlData.getPlaceDetailsForQuery(_location, proximity, _searchString, sensor, key);
 //        Log.e("",call.toString());
         call.enqueue(new Callback<PlaceResponse>() {
             @Override
-            public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
-                PlaceResponse placeResponse = response.body();
+            public void onResponse(@NonNull Call<PlaceResponse> call, @NonNull Response<PlaceResponse> response) {
+//                PlaceResponse placeResponse = response.body();
                 showNearbyPlace(response.body().getResults());
             }
 
             @Override
-            public void onFailure(Call<PlaceResponse> call, Throwable t) {
-                Log.e("Received data","<----------------Nothing Received---------------->");
+            public void onFailure(@NonNull Call<PlaceResponse> call, @NonNull Throwable t) {
+                Log.e("Received data", "<----------------Nothing Received---------------->");
                 Log.e("Error Message", t.getMessage());
             }
         });
 
-//        showNearbyPlace();
     }
-//    @Override
-//    protected void onPostExecute(String s) {
-//        List<PlaceInfo> nearbyPlaceList;
-//        Log.e("Tracing","<----------------- Post Execute ------------------>");
-//        DataParser dataParser = new DataParser();
-//        nearbyPlaceList = dataParser.parse(s);
-//        Log.e("Before Calling",String.valueOf(nearbyPlaceList.size()));
-//        showNearbyPlace(nearbyPlaceList);
-
-//    }
 
     private void showNearbyPlace(List<PlaceInfo> nearbyPlaces){
         Log.e("Tracing","<----------------- showing Nearby Places ------------------>");
         Log.e("String Value ",String.valueOf(nearbyPlaces.size()));
-
+        mClusterManager = new ClusterManager<>(context,mMap);
         for(int i=0;i<nearbyPlaces.size();i++){
             MarkerOptions markerOptions = new MarkerOptions();
             PlaceInfo googlePlaces = nearbyPlaces.get(i);
@@ -124,16 +115,45 @@ public class GetPlaces{
             markerOptions.title(placeName);
             markerOptions.position(latLng);
             markerOptions.snippet(vicinity);
+            markerOptions.alpha((float) googlePlaces.getRating());
+//            writeToRealm(placeName,vicinity,lat,lng,googlePlaces.getIcon(),googlePlaces.getRating());
+            Log.e("Get Icon", googlePlaces.getIcon());
+            Picasso.get().load(googlePlaces.getIcon()).into(imageView);
+            mClusterManager.addItem(new MyItem(lat,lng,placeName,vicinity));
             mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,MainActivity.DEFAULT_ZOOM));
-            mMap.setOnCameraIdleListener(mClusterManager);
-            mMap.setOnMarkerClickListener(mClusterManager);
-//            double offset = i / 60d;
-//            lat = lat + offset;
-//            lng = lng + offset;
-//            MyItem offsetItem = new MyItem(lat, lng);
-//            mClusterManager.addItem(offsetItem);
         }
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,MainActivity.DEFAULT_ZOOM));
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mClusterManager.setRenderer(new ManageClusterManager(context, mMap, mClusterManager));
     }
+
+    private void writeToRealm(final String placeName, final String vicinity, final double lat, final double lng, final String icon, final double rating) {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DatabaseInfoModel info = realm.createObject(DatabaseInfoModel.class);
+                info.setName(placeName);
+                info.setVicinity(vicinity);
+                info.setLat(String.valueOf(lat));
+                info.setLng(String.valueOf(lng));
+                info.setIcon(icon);
+                info.setRating(rating);
+            }
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.e("Stored Successfully","Realm Database stored these values");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.e("Storing Error","Realm Database has some error storing the values",error);
+            }
+        });
+    }
+
 
 }
