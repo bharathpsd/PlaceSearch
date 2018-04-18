@@ -4,6 +4,7 @@ package com.example.android.placesearch;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.example.android.placesearch.Geometry;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -108,37 +109,22 @@ public class GetPlaces{
     private void showNearbyPlace(List<PlaceInfo> nearbyPlaces){
         Log.e("Tracing","<----------------- showing Nearby Places ------------------>");
         Log.e("String Value ",String.valueOf(nearbyPlaces.size()));
-        double lat = 0,lng = 0;
-        LatLng latLng = null;
+
         for(int i=0;i<nearbyPlaces.size();i++){
             MarkerOptions markerOptions = new MarkerOptions();
             PlaceInfo googlePlaces = nearbyPlaces.get(i);
-//            Log.e("Tracing",nearbyPlaces.get(i).toString());
-//            Log.e("Data:" , nearbyPlaces.toString());
             String placeName = googlePlaces.getPlaceName();
             String vicinity = googlePlaces.getVicinity();
-            String geometry =  googlePlaces.getGeometry();
-            try {
-                JSONObject geometry_json = new JSONObject(geometry);
-                JSONArray location = geometry_json.getJSONArray("location");
-                lat =  Double.parseDouble(location.getString(0));
-                 lng =  Double.parseDouble(location.getString(1));
-                latLng = new LatLng(lat,lng);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-//            Bitmap bmp = Picasso.get().load(googlePlaces.getIcon());
-
-            markerOptions.position(latLng);
+            Geometry geometry =  googlePlaces.getGeometry();
+                double lat =  geometry.getLocation().getLat();
+                Log.e("Latitude",String.valueOf(lat));
+                double lng =  geometry.getLocation().getLng();
+                Log.e("Longitude",String.valueOf(lng));
+                LatLng latLng = new LatLng(lat,lng);
             markerOptions.title(placeName);
             markerOptions.snippet(vicinity);
-//            markerOptions.icon(googlePlaces.getIcon());
-//            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,MainActivity.DEFAULT_ZOOM));
-//            mClusterManager = new ClusterManager<MyItem>(context, mMap);
             mMap.setOnCameraIdleListener(mClusterManager);
             mMap.setOnMarkerClickListener(mClusterManager);
             double offset = i / 60d;
@@ -146,10 +132,7 @@ public class GetPlaces{
             lng = lng + offset;
             MyItem offsetItem = new MyItem(lat, lng);
             mClusterManager.addItem(offsetItem);
-//            mClusterManager.setRenderer(new ClusterRenderer<MyItem>(context,mMap) );
         }
-
-
     }
 
 }

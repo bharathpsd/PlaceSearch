@@ -1,7 +1,10 @@
 package com.example.android.placesearch;
 
+import com.example.android.placesearch.Geometry;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONObject;
 
 public class PlaceInfo {
 
@@ -15,14 +18,10 @@ public class PlaceInfo {
 
     @SerializedName("geometry")
     @Expose
-    private String geometry;
+    private Geometry geometry;
 
 
-    @SerializedName("lng")
-    @Expose
-    private String lng;
-
-    public String getGeometry() {
+    public Geometry getGeometry() {
         return geometry;
     }
 
@@ -38,8 +37,9 @@ public class PlaceInfo {
         return vicinity;
     }
 
-    public String getLng() {
-        return lng;
+
+    public void setGeometry(Geometry geometry){
+        this.geometry = geometry;
     }
 
 
