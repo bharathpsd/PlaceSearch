@@ -122,16 +122,17 @@ public class GetPlaces{
                 Log.e("Longitude",String.valueOf(lng));
                 LatLng latLng = new LatLng(lat,lng);
             markerOptions.title(placeName);
+            markerOptions.position(latLng);
             markerOptions.snippet(vicinity);
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,MainActivity.DEFAULT_ZOOM));
             mMap.setOnCameraIdleListener(mClusterManager);
             mMap.setOnMarkerClickListener(mClusterManager);
-            double offset = i / 60d;
-            lat = lat + offset;
-            lng = lng + offset;
-            MyItem offsetItem = new MyItem(lat, lng);
-            mClusterManager.addItem(offsetItem);
+//            double offset = i / 60d;
+//            lat = lat + offset;
+//            lng = lng + offset;
+//            MyItem offsetItem = new MyItem(lat, lng);
+//            mClusterManager.addItem(offsetItem);
         }
     }
 
