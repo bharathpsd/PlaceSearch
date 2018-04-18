@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -16,7 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
@@ -30,7 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -45,11 +43,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
-
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,15 +69,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private double latitude,longitude;
     private LocationRequest locationRequest;
     private Location lastlocation;
-    private Realm realm;
     private GoogleApiClient client;
-    private Marker currentLocationmMarker;
+    private Marker currentLocationMarker;
     private ClusterManager<MyItem> mClusterManager = null;
+
     //widget
     AutoCompleteTextView editText;
     ImageView imageView;
-    //places
-    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+
+    //Realmdatabase
+    Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void init(){
-
-        mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this,Places.getGeoDataClient(this),LAT_LNG_BOUNDS,null);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -153,8 +147,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         }
                     }
                 });
-
-
             }
         } catch (SecurityException e) {
             Log.e("#########", "Security Exception");
@@ -165,49 +157,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void geoLocate() {
         Log.e("########","GeoLocating");
         mMap.clear();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),7));
         String searchString = editText.getText().toString();
         String location;
         String key = "AIzaSyCISqMTancgO02iHQ-VRE8praCFcH-1uqQ";
-        String url = getUrl(searchString,latitude,longitude);
-        if(url != null) {
+//        String url = getUrl(searchString,latitude,longitude);
+        if(latitude != 0 && longitude !=0) {
             location = String.valueOf(latitude) + "," + String.valueOf(longitude);
             getJSONData(location,String.valueOf(PROXIMITY_RADIUS),searchString,"true",key);
             hideSoftKeyBoard(MainActivity.this);
             GetPlaces getPlaces = new GetPlaces(getApplicationContext());
             Toast.makeText(this, "Showing nearby " + searchString, Toast.LENGTH_LONG).show();
         } else {
-            Log.e("URL", "URL is null");
-        }
-    }
-
-    private String getUrl(String searchString,double latitude,double longitude){
-        if(latitude != 0 && longitude !=0) {
-            StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-            googlePlaceUrl.append("location=" + latitude + "," + longitude);
-            googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-
-            for(int i = 0; i < searchString.length(); i++){
-                if(searchString.charAt(i) == ' '){
-                    searchString.replace(" ","_");
-                    searchString = searchString.replaceAll(" ", "_");
-                }
-            }
-            googlePlaceUrl.append("&type=" + searchString);
-            googlePlaceUrl.append("&components=country:us");
-            googlePlaceUrl.append("&sensor=true");
-            googlePlaceUrl.append("&key=AIzaSyCISqMTancgO02iHQ-VRE8praCFcH-1uqQ");
-            Log.e("<------- URL --------->", googlePlaceUrl.toString());
-            return googlePlaceUrl.toString();
-        } else {
             getDeviceLocation();
-            return null;
         }
     }
 
     private void moveCamera(LatLng latlng, float zoom, String title) {
         Log.e("#################", "Moving Camera to Latlong Object");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
-
         if(!title.equals("My Location")) {
             MarkerOptions options = new MarkerOptions().position(latlng).title(title);
             mMap.addMarker(options);
@@ -248,53 +216,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.e("##################", "Map is Ready to Load");
         mMap = googleMap;
-
         client = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
         client.connect();
         mClusterManager = new ClusterManager<>(this,mMap);
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
         mClusterManager.setRenderer(new ManageClusterManager(this, mMap, mClusterManager));
+        mClusterManager.getMarkerCollection()
+                .setOnInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getApplicationContext())));
+
+        mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
 
 
-        if(mMap != null){
-
-//            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-//                @Override
-//                public View getInfoWindow(Marker marker) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public View getInfoContents(final Marker marker) {
-//                    View v = getLayoutInflater().inflate(R.layout.info_marker,null);
-//                    TextView address_name = v.findViewById(R.id.address_vicinity);
-//                    TextView latlng = v.findViewById(R.id.latlng);
-//                    TextView vicinity = v.findViewById(R.id.address);
-//                    TextView rating = v.findViewById(R.id.rating_info);
-//                    address_name.setText(marker.getTitle());
-//                    vicinity.setText(marker.getSnippet());
-//                    LatLng latLng = marker.getPosition();
-//                    rating.setText(String.valueOf(marker.getAlpha()));
-//                    String latitude_longitude = String.valueOf(latLng.latitude) + "," + String.valueOf(latLng.longitude);
-//                    latlng.setText(latitude_longitude);
-//                    return v;
-//                }
-//            });
-//
-//
-//            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//                @Override
-//                public void onInfoWindowClick(Marker marker) {
-//                    Intent intent = new Intent(MainActivity.this,InfoActivity.class);
-//                    intent.putExtra("Address",marker.getTitle());
-//                    intent.putExtra("Vicinity",marker.getTitle());
-//                    String latitude_longitude = String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude);
-//                    intent.putExtra("Location",latitude_longitude);
-//                    startActivity(intent);
-//                }
-//            });
-        }
         /*
          * If there is the permission we have to show our location on the map.
          * To do that, we have to setMyLocationEnabled(true).
@@ -395,10 +328,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         lastlocation = location;
-        if(currentLocationmMarker != null)
+        if(currentLocationMarker != null)
         {
-            currentLocationmMarker.remove();
-
+            currentLocationMarker.remove();
         }
         Log.d("lat = ",""+latitude);
         LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
@@ -407,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         markerOptions.title("Current Location");
         markerOptions.snippet("My Present Location");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        currentLocationmMarker = mMap.addMarker(markerOptions);
+        currentLocationMarker = mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomBy(7));
 
@@ -419,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void getJSONData(String _location,String proximity,String _searchString,String sensor,String key) {
         Log.e("", "<------------------getJSONData running-------------->");
+        mMap.clear();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DownloadUrl.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -447,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void showNearbyPlace(List<PlaceInfo> nearbyPlaces){
         Log.e("Tracing","<----------------- showing Nearby Places ------------------>");
         Log.e("String Value ",String.valueOf(nearbyPlaces.size()));
-
+        mClusterManager.clearItems();
         for(int i=0;i<nearbyPlaces.size();i++){
             PlaceInfo googlePlaces = nearbyPlaces.get(i);
             String placeName = googlePlaces.getPlaceName();
@@ -479,6 +412,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
+//        realm.close();
     }
 }
