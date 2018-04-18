@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/white_border">
+
+    <ImageView
+    android:contentDescription="@string/app_name"
+    android:id="@+id/imageview_info"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="5"
+    tools:ignore="NestedWeights"
+    android:padding="16dp"/>
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/address_vicinity_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:id="@+id/latlng_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:id="@+id/address_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/navigate_maps"/>
+
+</LinearLayout>
