@@ -24,7 +24,7 @@ class MyItem implements ClusterItem, com.google.maps.android.clustering.ClusterI
 
     @Override
     public String getPlaceTitle() {
-        return null;
+        return mTitle;
     }
 
     @Override

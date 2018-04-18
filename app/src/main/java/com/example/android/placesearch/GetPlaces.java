@@ -5,14 +5,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.android.placesearch.Geometry;
 import com.example.android.placesearch.model.DatabaseInfoModel;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
 
@@ -34,32 +39,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GetPlaces{
-    private ClusterManager<MyItem> mClusterManager = null;
-    private String googlePlacesData;
-    private String _location;
-    private String proximity;
-    private String _searchString;
-    private String sensor;
-    private String key;
-    private GoogleMap mMap;
     private Realm realm;
-    private Retrofit retrofit;
-    private JSONObject data;
-    private String url;
-    private ImageView imageView;
-    private Context context;
 
-    GetPlaces(Object[] objects) {
-        mMap = (GoogleMap) objects[0];
-        _location = (String) objects[1];
-        proximity = String.valueOf((int) objects[2]);
-        _searchString = (String) objects[3];
-        sensor = (String) objects[4];
-        key = (String) objects[5];
-        imageView = (ImageView) objects[6];
-        context = (Context) objects[7];
+    GetPlaces(Context context) {
         initRealm(context);
-        getJSONData();
     }
 
     private void initRealm(Context context){
@@ -70,63 +53,6 @@ public class GetPlaces{
         realm = Realm.getDefaultInstance();
     }
 
-    private void getJSONData() {
-        Log.e("", "<------------------getJSONData running-------------->");
-        retrofit = new Retrofit.Builder()
-                .baseUrl(DownloadUrl.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        DownloadUrl downloadUrlData = retrofit.create(DownloadUrl.class);
-        Log.e("", "<------------------Retrofit Data Created-------------->");
-        Call<PlaceResponse> call = downloadUrlData.getPlaceDetailsForQuery(_location, proximity, _searchString, sensor, key);
-//        Log.e("",call.toString());
-        call.enqueue(new Callback<PlaceResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<PlaceResponse> call, @NonNull Response<PlaceResponse> response) {
-//                PlaceResponse placeResponse = response.body();
-                showNearbyPlace(response.body().getResults());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<PlaceResponse> call, @NonNull Throwable t) {
-                Log.e("Received data", "<----------------Nothing Received---------------->");
-                Log.e("Error Message", t.getMessage());
-            }
-        });
-
-    }
-
-    private void showNearbyPlace(List<PlaceInfo> nearbyPlaces){
-        Log.e("Tracing","<----------------- showing Nearby Places ------------------>");
-        Log.e("String Value ",String.valueOf(nearbyPlaces.size()));
-        mClusterManager = new ClusterManager<>(context,mMap);
-        for(int i=0;i<nearbyPlaces.size();i++){
-            MarkerOptions markerOptions = new MarkerOptions();
-            PlaceInfo googlePlaces = nearbyPlaces.get(i);
-            String placeName = googlePlaces.getPlaceName();
-            String vicinity = googlePlaces.getVicinity();
-            Geometry geometry =  googlePlaces.getGeometry();
-                double lat =  geometry.getLocation().getLat();
-                Log.e("Latitude",String.valueOf(lat));
-                double lng =  geometry.getLocation().getLng();
-                Log.e("Longitude",String.valueOf(lng));
-                LatLng latLng = new LatLng(lat,lng);
-            markerOptions.title(placeName);
-            markerOptions.position(latLng);
-            markerOptions.snippet(vicinity);
-            markerOptions.alpha((float) googlePlaces.getRating());
-//            writeToRealm(placeName,vicinity,lat,lng,googlePlaces.getIcon(),googlePlaces.getRating());
-            Log.e("Get Icon", googlePlaces.getIcon());
-            Picasso.get().load(googlePlaces.getIcon()).into(imageView);
-            mClusterManager.addItem(new MyItem(lat,lng,placeName,vicinity));
-            mMap.addMarker(markerOptions);
-        }
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,MainActivity.DEFAULT_ZOOM));
-        mMap.setOnCameraIdleListener(mClusterManager);
-        mMap.setOnMarkerClickListener(mClusterManager);
-        mClusterManager.setRenderer(new ManageClusterManager(context, mMap, mClusterManager));
-    }
 
     private void writeToRealm(final String placeName, final String vicinity, final double lat, final double lng, final String icon, final double rating) {
         realm.executeTransactionAsync(new Realm.Transaction() {
