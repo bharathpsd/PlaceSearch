@@ -54,11 +54,13 @@ public class GetPlaces{
     }
 
 
-    private void writeToRealm(final String placeName, final String vicinity, final double lat, final double lng, final String icon, final double rating) {
+    public void writeToRealm(final String searchString, final String placeName, final String vicinity, final double lat, final double lng, final String icon, final String rating) {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                Log.e("Inside","<----------------- Write to Realm------------->");
                 DatabaseInfoModel info = realm.createObject(DatabaseInfoModel.class);
+                info.setSearchString(searchString);
                 info.setName(placeName);
                 info.setVicinity(vicinity);
                 info.setLat(String.valueOf(lat));
@@ -80,6 +82,5 @@ public class GetPlaces{
             }
         });
     }
-
 
 }

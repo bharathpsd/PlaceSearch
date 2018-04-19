@@ -7,8 +7,10 @@ public class DatabaseInfoModel extends RealmObject{
     private String vicinity;
     private String lat;
     private String lng;
-    private double rating;
+    private String rating;
     private String icon;
+
+    private String searchString;
 
     public String getName() {
         return name;
@@ -42,11 +44,11 @@ public class DatabaseInfoModel extends RealmObject{
         this.lng = lng;
     }
 
-    public double getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 
@@ -57,6 +59,9 @@ public class DatabaseInfoModel extends RealmObject{
     public void setIcon(String icon) {
         this.icon = icon;
     }
+
+    public void setSearchString(String searchString) { this.searchString = searchString; }
+
 
     @Override
     public String toString() {
@@ -69,4 +74,5 @@ public class DatabaseInfoModel extends RealmObject{
                 ", icon='" + icon + '\'' +
                 '}';
     }
+
 }

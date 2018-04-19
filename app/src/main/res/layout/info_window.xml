@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="400dp"
     android:padding="16dp"
     android:background="@drawable/white_border">
 
@@ -22,24 +22,26 @@
         android:id="@+id/address_vicinity_info"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:textStyle="bold"/>
 
-    <TextView
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        android:id="@+id/latlng_info"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
 
     <TextView
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:id="@+id/address_info"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         />
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/rating_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
 
 
     <Button

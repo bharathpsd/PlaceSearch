@@ -45,5 +45,6 @@ public class ManageClusterManager extends DefaultClusterRenderer<MyItem> {
         super.onBeforeClusterItemRendered(item, markerOptions);
         markerOptions.title(item.getPlaceTitle());
         markerOptions.snippet(item.getSnippet());
+
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/white_border">
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:id="@+id/imageview_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="NestedWeights"
+        android:padding="16dp"/>
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/address_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/address_vicinity_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/location_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+
+    <TextView
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/rating_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

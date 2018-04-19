@@ -11,28 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.placesearch.model.DatabaseInfoModel;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
 
 public class RecyclerFragment extends Fragment {
 
     RecyclerView recyclerView;
+    String searchString;
+    Realm realm;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_one,container,false);
         recyclerView = view.findViewById(R.id.recyclerview);
-
-        List<String> list = new ArrayList<>();
-        list.add("String 1");
-        list.add("String 1");
-        list.add("String 1");
-        list.add("String 1");
-        list.add("String 1");
-        list.add("String 1");
-        list.add("String 1");
-        MyAdapter myAdapter = new MyAdapter(list);
+        realm = Realm.getDefaultInstance();
+        searchString = getArguments().getString("search_string");
+        List<DatabaseInfoModel> result1 = queryData(searchString);
+        MyAdapter myAdapter = new MyAdapter(result1);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(myAdapter);
@@ -41,9 +42,9 @@ public class RecyclerFragment extends Fragment {
 
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.MainViewHolder>{
 
-        List<String> list;
+        List<DatabaseInfoModel> list;
 
-        MyAdapter(List<String> listincoming){
+        MyAdapter(List<DatabaseInfoModel> listincoming){
             list = listincoming;
         }
 
@@ -56,7 +57,8 @@ public class RecyclerFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-            holder.textView.setText(list.get(position));
+            holder.textView.setText(list.get(position).getName());
+            holder.textView1.setText(list.get(position).getVicinity());
         }
 
         @Override
@@ -72,6 +74,17 @@ public class RecyclerFragment extends Fragment {
                 textView1 = itemView.findViewById(R.id.textview2);
             }
         }
+    }
+
+    public List<DatabaseInfoModel> queryData(String searchString) {
+        // Build the query looking at all users:
+        RealmQuery<DatabaseInfoModel> query = realm.where(DatabaseInfoModel.class);
+        // Add query conditions:
+        query.equalTo("searchString", searchString);
+        // Execute the query:
+
+        return query.findAll();
+
     }
 
 }
