@@ -4,10 +4,14 @@ import android.content.Context;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.squareup.picasso.Picasso;
+
+import static com.squareup.picasso.Picasso.*;
 
 public class ManageClusterManager extends DefaultClusterRenderer<MyItem> {
 
@@ -45,6 +49,5 @@ public class ManageClusterManager extends DefaultClusterRenderer<MyItem> {
         super.onBeforeClusterItemRendered(item, markerOptions);
         markerOptions.title(item.getPlaceTitle());
         markerOptions.snippet(item.getSnippet());
-
     }
 }

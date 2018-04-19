@@ -1,15 +1,23 @@
 package com.example.android.placesearch;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +34,9 @@ public class GridRecycler extends AppCompatActivity {
     RecyclerView recyclerView;
     String searchString;
     Realm realm;
+    FloatingActionButton fab_main,fab_grid,fab_maps;
+    private static boolean fab_visibility;
+    Animation show_fab,hide_fab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +44,17 @@ public class GridRecycler extends AppCompatActivity {
         setContentView(R.layout.grid_view_layout);
         realm = Realm.getDefaultInstance();
 //        realm.beginTransaction();
+
+        fab_main = findViewById(R.id.fab_main_grid);
+        fab_grid = findViewById(R.id.fab_1_grid);
+        fab_maps = findViewById(R.id.fab_2_grid);
+        show_fab = AnimationUtils.loadAnimation(this,R.anim.show_fab);
+        hide_fab = AnimationUtils.loadAnimation(this,R.anim.hide_fab);
+        fab_visibility = false;
+        fab_main.setImageResource(R.drawable.settings);
+        fab_main.setBackgroundColor(Color.parseColor("#448AFF"));
+        fab_grid.setImageResource(R.drawable.grid_layout);
+        fab_maps.setImageResource(R.drawable.maps);
         recyclerView = findViewById(R.id.recyclerview_grid);
         searchString = getIntent().getStringExtra("search_string");
         List<DatabaseInfoModel> result1 = queryData(searchString);
@@ -40,8 +62,43 @@ public class GridRecycler extends AppCompatActivity {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this,gridLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(myAdapter);
+
+
+        fab_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(fab_visibility == false){
+                    fab_visibility = true;
+                    fab_grid.setVisibility(View.VISIBLE);
+                    fab_maps.setVisibility(View.VISIBLE);
+                    fab_maps.startAnimation(show_fab);
+                    fab_grid.startAnimation(show_fab);
+                } else {
+                    fab_visibility = false;
+                    fab_grid.setVisibility(View.INVISIBLE);
+                    fab_maps.setVisibility(View.INVISIBLE);
+                    fab_maps.startAnimation(hide_fab);
+                    fab_grid.startAnimation(hide_fab);
+                }
+
+
+            }
+        });
+
+        fab_maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+            }
+        });
 
     }
 

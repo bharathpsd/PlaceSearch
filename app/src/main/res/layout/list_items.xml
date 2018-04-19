@@ -9,9 +9,10 @@
     <TextView
         android:id="@+id/textview1"
         android:layout_width="125dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
+        android:textAlignment="center"
         android:hint="@string/app_name"
         android:padding="16dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
@@ -21,6 +22,7 @@
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textAlignment="center"
         android:hint="@string/cast_disconnect"
         android:padding="16dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />

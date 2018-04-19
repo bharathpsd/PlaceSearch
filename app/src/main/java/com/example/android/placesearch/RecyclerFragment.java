@@ -1,5 +1,6 @@
 package com.example.android.placesearch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,7 +59,7 @@ public class RecyclerFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
             holder.textView.setText(list.get(position).getName());
-            holder.textView1.setText(list.get(position).getVicinity());
+            holder.textView1.setText(list.get(position).getRating());
         }
 
         @Override
@@ -72,6 +73,20 @@ public class RecyclerFragment extends Fragment {
                 super(itemView);
                 textView = itemView.findViewById(R.id.textview1);
                 textView1 = itemView.findViewById(R.id.textview2);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(),InfoActivity.class);
+                        intent.putExtra("Address",list.get(getAdapterPosition()).getName());
+                        intent.putExtra("Vicinity",list.get(getAdapterPosition()).getVicinity());
+                        intent.putExtra("Latitude",list.get(getAdapterPosition()).getLat());
+                        intent.putExtra("Longitude",list.get(getAdapterPosition()).getLng());
+                        intent.putExtra("Icon",list.get(getAdapterPosition()).getIcon());
+                        intent.putExtra("Rating",list.get(getAdapterPosition()).getRating());
+                        startActivityForResult(intent,1);
+                    }
+                });
+
             }
         }
     }
