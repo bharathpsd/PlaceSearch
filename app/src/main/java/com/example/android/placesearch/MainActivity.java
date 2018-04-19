@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mClusterManager = new ClusterManager<>(this,mMap);
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
+
         mClusterManager.setRenderer(new ManageClusterManager(this, mMap, mClusterManager));
         mClusterManager.getMarkerCollection()
                 .setOnInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getApplicationContext())));
@@ -384,7 +385,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         for(int i=0;i<nearbyPlaces.size();i++){
             PlaceInfo googlePlaces = nearbyPlaces.get(i);
             String placeName = googlePlaces.getPlaceName();
+            Log.e("Place Name",googlePlaces.getPlaceName());
             String vicinity = googlePlaces.getVicinity();
+            Log.e("Vicinity Name",googlePlaces.getVicinity());
             Geometry geometry =  googlePlaces.getGeometry();
             double lat =  geometry.getLocation().getLat();
             Log.e("Latitude",String.valueOf(lat));

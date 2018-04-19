@@ -4,12 +4,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 class MyItem implements ClusterItem, com.google.maps.android.clustering.ClusterItem {
     private final LatLng mPosition;
-    private String mTitle = null;
-    private String mSnippet = null;
+    private String mTitle;
+    private String mSnippet;
 
-    public MyItem(double lat, double lng) {
-        mPosition = new LatLng(lat, lng);
-    }
+//    public MyItem(double lat, double lng) {
+//        mPosition = new LatLng(lat, lng);
+//    }
 
     public MyItem(double lat, double lng, String title, String snippet) {
         mPosition = new LatLng(lat, lng);

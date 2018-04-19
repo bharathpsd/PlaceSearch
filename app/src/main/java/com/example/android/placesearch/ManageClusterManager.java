@@ -12,10 +12,12 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 public class ManageClusterManager extends DefaultClusterRenderer<MyItem> {
 
     private GoogleMap googleMap;
+    private Context mContext = null;
 
     public ManageClusterManager(Context context, GoogleMap map, ClusterManager<MyItem> clusterManager) {
         super(context, map, clusterManager);
         googleMap = map;
+        mContext = context;
     }
 
     @Override
@@ -41,5 +43,7 @@ public class ManageClusterManager extends DefaultClusterRenderer<MyItem> {
     @Override
     protected void onBeforeClusterItemRendered(MyItem item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
+        markerOptions.title(item.getPlaceTitle());
+        markerOptions.snippet(item.getSnippet());
     }
 }
