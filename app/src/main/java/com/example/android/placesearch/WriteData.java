@@ -38,10 +38,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GetPlaces{
+public class WriteData {
     private Realm realm;
 
-    GetPlaces(Context context) {
+    WriteData(Context context) {
         initRealm(context);
     }
 
@@ -59,10 +59,9 @@ public class GetPlaces{
             @Override
             public void execute(Realm realm) {
                 Log.e("Inside","<----------------- Write to Realm------------->");
-                DatabaseInfoModel info = realm.createObject(DatabaseInfoModel.class);
+                DatabaseInfoModel info = realm.createObject(DatabaseInfoModel.class,vicinity);
                 info.setSearchString(searchString);
                 info.setName(placeName);
-                info.setVicinity(vicinity);
                 info.setLat(String.valueOf(lat));
                 info.setLng(String.valueOf(lng));
                 info.setIcon(icon);

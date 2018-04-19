@@ -1,10 +1,14 @@
 package com.example.android.placesearch.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class DatabaseInfoModel extends RealmObject{
     private String name;
+
+    @PrimaryKey
     private String vicinity;
+
     private String lat;
     private String lng;
     private String rating;

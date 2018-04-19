@@ -26,7 +26,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -440,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void showNearbyPlace(List<PlaceInfo> nearbyPlaces) {
         Log.e("Tracing", "<----------------- showing Nearby Places ------------------>");
         Log.e("String Value ", String.valueOf(nearbyPlaces.size()));
-        GetPlaces getPlaces = new GetPlaces(this);
+        WriteData writeData = new WriteData(this);
         mClusterManager.clearItems();
         for (int i = 0; i < nearbyPlaces.size(); i++) {
             PlaceInfo googlePlaces = nearbyPlaces.get(i);
@@ -461,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.e("Get Icon", googlePlaces.getIcon());
             Picasso.get().load(googlePlaces.getIcon()).into(imageView);
             mClusterManager.addItem(new MyItem(lat, lng, placeName, vicinity, icon,rating));
-            getPlaces.writeToRealm(editText.getText().toString(),placeName,vicinity,lat,lng,icon,rating);
+            writeData.writeToRealm(editText.getText().toString(),placeName,vicinity,lat,lng,icon,rating);
         }
         loadRecyclerFragment(latitude,longitude,searchString);
         mClusterManager.cluster();
