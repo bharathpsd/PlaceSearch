@@ -1,4 +1,4 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.helper_classes;
 
 //import android.content.Context;
 import android.content.Context;
@@ -12,7 +12,7 @@ import io.realm.RealmConfiguration;
 public class WriteData {
     private Realm realm;
 
-    WriteData(Context context) {
+    public WriteData(Context context) {
         initRealm(context);
     }
 

@@ -1,4 +1,4 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.helper_classes;
 
 import com.example.android.placesearch.model.PlaceResponse;
 

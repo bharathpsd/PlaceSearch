@@ -1,4 +1,4 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.helper_classes;
 
 import com.google.android.gms.maps.model.LatLng;
 

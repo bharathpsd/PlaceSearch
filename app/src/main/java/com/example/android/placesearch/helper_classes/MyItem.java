@@ -1,10 +1,10 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.helper_classes;
 
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-class MyItem implements ClusterItem, com.google.maps.android.clustering.ClusterItem {
+public class MyItem implements ClusterItem, com.google.maps.android.clustering.ClusterItem {
     private final LatLng mPosition;
     private String mTitle;
     private String mSnippet;
