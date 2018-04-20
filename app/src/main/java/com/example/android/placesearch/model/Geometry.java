@@ -1,4 +1,3 @@
-
 package com.example.android.placesearch.model;
 
 import com.google.gson.annotations.Expose;

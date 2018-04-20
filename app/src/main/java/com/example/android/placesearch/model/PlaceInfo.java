@@ -29,6 +29,10 @@ public class PlaceInfo {
         return geometry;
     }
 
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -57,12 +61,4 @@ public class PlaceInfo {
         this.rating = rating;
     }
 
-    public void setGeometry(Geometry geometry){
-        this.geometry = geometry;
-    }
-
-
-//    public BitmapDescriptor getIcon() {
-////        return icon;
-//    }
 }

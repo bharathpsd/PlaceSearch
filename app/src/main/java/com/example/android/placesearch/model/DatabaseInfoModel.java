@@ -3,7 +3,7 @@ package com.example.android.placesearch.model;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class DatabaseInfoModel extends RealmObject{
+public class DatabaseInfoModel extends RealmObject {
     private String name;
 
     @PrimaryKey
@@ -64,7 +64,9 @@ public class DatabaseInfoModel extends RealmObject{
         this.icon = icon;
     }
 
-    public void setSearchString(String searchString) { this.searchString = searchString; }
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
 
 
     @Override

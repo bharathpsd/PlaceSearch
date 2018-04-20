@@ -41,6 +41,17 @@ public class RecyclerFragment extends Fragment {
         return view;
     }
 
+    public List<DatabaseInfoModel> queryData(String searchString) {
+        // Build the query looking at all users:
+        RealmQuery<DatabaseInfoModel> query = realm.where(DatabaseInfoModel.class);
+        // Add query conditions:
+        query.equalTo("searchString", searchString);
+        // Execute the query:
+
+        return query.findAll();
+
+    }
+
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.MainViewHolder>{
 
         List<DatabaseInfoModel> list;
@@ -89,17 +100,6 @@ public class RecyclerFragment extends Fragment {
 
             }
         }
-    }
-
-    public List<DatabaseInfoModel> queryData(String searchString) {
-        // Build the query looking at all users:
-        RealmQuery<DatabaseInfoModel> query = realm.where(DatabaseInfoModel.class);
-        // Add query conditions:
-        query.equalTo("searchString", searchString);
-        // Execute the query:
-
-        return query.findAll();
-
     }
 
 }

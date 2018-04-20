@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="@drawable/white_border">
+    android:background="@drawable/white_border"
+    android:elevation="15dp">
 
     <ImageView
         android:contentDescription="@string/app_name"
