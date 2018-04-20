@@ -2,41 +2,12 @@ package com.example.android.placesearch;
 
 //import android.content.Context;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.android.placesearch.Geometry;
 import com.example.android.placesearch.model.DatabaseInfoModel;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterManager;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.realm.CompactOnLaunchCallback;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WriteData {
     private Realm realm;

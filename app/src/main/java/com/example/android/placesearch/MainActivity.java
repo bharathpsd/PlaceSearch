@@ -28,6 +28,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.placesearch.model.Geometry;
+import com.example.android.placesearch.model.PlaceInfo;
+import com.example.android.placesearch.model.PlaceResponse;
+import com.example.android.placesearch.view.CustomInfoWindowAdapter;
+import com.example.android.placesearch.view.GridRecycler;
+import com.example.android.placesearch.view.InfoActivity;
+import com.example.android.placesearch.view.RecyclerFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;

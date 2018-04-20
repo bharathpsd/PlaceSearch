@@ -1,5 +1,7 @@
 package com.example.android.placesearch;
 
+import com.example.android.placesearch.model.PlaceResponse;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

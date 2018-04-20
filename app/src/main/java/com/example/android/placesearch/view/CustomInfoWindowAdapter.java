@@ -1,10 +1,11 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.view;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.android.placesearch.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;

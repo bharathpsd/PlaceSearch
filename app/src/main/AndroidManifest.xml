@@ -23,8 +23,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".InfoActivity"/>
-        <activity android:name=".GridRecycler"/>
+        <activity android:name=".view.InfoActivity"/>
+        <activity android:name=".view.GridRecycler"/>
 
 
         <meta-data

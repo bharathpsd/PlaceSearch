@@ -1,4 +1,4 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.placesearch.R;
 import com.example.android.placesearch.model.DatabaseInfoModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;

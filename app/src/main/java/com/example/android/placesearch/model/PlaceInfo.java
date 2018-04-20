@@ -1,12 +1,7 @@
-package com.example.android.placesearch;
+package com.example.android.placesearch.model;
 
-import android.graphics.Bitmap;
-
-import com.example.android.placesearch.Geometry;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONObject;
 
 public class PlaceInfo {
 
