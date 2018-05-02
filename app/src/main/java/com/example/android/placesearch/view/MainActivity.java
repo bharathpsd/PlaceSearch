@@ -148,9 +148,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void loadRecyclerView(String searchString,RecyclerView recycler) {
+
         realm = Realm.getDefaultInstance();
         List<DatabaseInfoModel> result1 = queryData(searchString,realm);
-        MyRecyclerAdapter myAdapter = new MyRecyclerAdapter(result1,this);
+        MyRecyclerAdapter myAdapter = new MyRecyclerAdapter(result1,recycler.getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recycler.setLayoutManager(linearLayoutManager);
         recycler.setAdapter(myAdapter);
@@ -164,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Execute the query:
         return query.findAll();
     }
+
+
 
 
 }
